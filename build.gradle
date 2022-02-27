@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+group 'com.kazurayam'
+version '0.1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+ext {
+    groovyVersion = '2.4.20'
+    slf4jVersion = '1.7.31'
+    commonsioVersion = '2.8.0'
+}
+
+dependencies {
+    implementation "org.codehaus.groovy:groovy-all:${groovyVersion}"
+    implementation group: 'com.kazurayam', name: 'materialstore', version: '0.4.0-SNAPSHOT'
+
+    // https://mvnrepository.com/artifact/org.apache.poi/poi
+    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
+    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.0'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-csv
+    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.9.0'
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    testImplementation group: 'commons-io', name: 'commons-io', version: "${commonsioVersion}"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.1'
+
+}
+
+test {
+    useJUnitPlatform()
+}
