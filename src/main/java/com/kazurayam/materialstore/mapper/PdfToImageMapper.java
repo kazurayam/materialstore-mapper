@@ -44,16 +44,15 @@ public class PdfToImageMapper implements Mapper {
         //
         byte[] data = store.read(pdfMaterial);
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // do data format conversion
         PDDocument document = PDDocument.load(bais);
         PDFRenderer pdfRenderer = new PDFRenderer(document);
         for (int page = 0; page < document.getNumberOfPages(); ++page) {
             BufferedImage bim = pdfRenderer.renderImageWithDPI(
                     page, 300, ImageType.RGB);
-            ByteArrayOutputStream baos_ = new ByteArrayOutputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIOUtil.writeImage(
-                    bim, "png", baos_, 300);
+                    bim, "png", baos, 300);
             //
             Metadata metadataWithPage=
                     Metadata.builder(pdfMaterial.getMetadata())
