@@ -31,6 +31,12 @@ dependencies {
     // https://mvnrepository.com/artifact/net.sf.cssbox/pdf2dom
     implementation group: 'net.sf.cssbox', name: 'pdf2dom', version: '2.0.1'
 
+    // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
+    implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.25'
+
+// https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-tools
+    implementation group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.25'
+
     implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
     // https://mvnrepository.com/artifact/commons-io/commons-io

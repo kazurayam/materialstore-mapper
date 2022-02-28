@@ -27,9 +27,9 @@ public class PdfToHtmlMapper implements Mapper {
         byte[] data = store.read(pdfMaterial);
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Writer writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
         // do data format conversion
         PDDocument pdf = PDDocument.load(bais);
+        Writer writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
         new PDFDomTree().writeText(pdf, writer);
         writer.flush();
         writer.close();
