@@ -28,6 +28,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-csv
     implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.9.0'
 
+    // https://mvnrepository.com/artifact/net.sf.cssbox/pdf2dom
+    implementation group: 'net.sf.cssbox', name: 'pdf2dom', version: '2.0.1'
+
     implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
     // https://mvnrepository.com/artifact/commons-io/commons-io

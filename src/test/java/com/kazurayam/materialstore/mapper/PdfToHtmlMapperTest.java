@@ -17,7 +17,7 @@ import java.nio.file.StandardOpenOption;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExcelToCsvMapperTest {
+public class PdfToHtmlMapperTest {
 
     private static Path outputDir;
     private static Path fixtureDir;
@@ -27,7 +27,7 @@ public class ExcelToCsvMapperTest {
     public static void beforeAll() throws IOException {
         Path projectDir = Paths.get(System.getProperty("user.dir"));
         outputDir = projectDir.resolve("build/tmp/testOutput")
-                .resolve(ExcelToCsvMapperTest.class.getName());
+                .resolve(PdfToHtmlMapperTest.class.getName());
         Files.createDirectories(outputDir);
         //
         fixtureDir = projectDir.resolve("src/test/fixture");
@@ -47,18 +47,19 @@ public class ExcelToCsvMapperTest {
         MaterialList materialList = store.select(new JobName("NISA"),
                 new JobTimestamp("20220226_214458"),
                 QueryOnMetadata.builderWithMetadata(metadata).build(),
-                FileType.XLSX);
+                FileType.PDF);
         assertEquals(1, materialList.size());
         //
-        ExcelToCsvMapper mapper = new ExcelToCsvMapper();
+        PdfToHtmlMapper mapper = new PdfToHtmlMapper();
         mapper.setStore(store);
         MapperResult mapperResult = mapper.map(materialList.get(0));
         assertTrue(mapperResult.getData().length > 0);
-        assertEquals(FileType.CSV, mapperResult.getFileType());
+        assertEquals(FileType.HTML, mapperResult.getFileType());
         //
-        Path csv = outputDir.resolve("sample.csv");
-        Files.write(csv, mapperResult.getData(), StandardOpenOption.CREATE);
-        assertTrue(Files.exists(csv));
+        Path html = outputDir.resolve("sample.html");
+        Files.write(html, mapperResult.getData(), StandardOpenOption.CREATE);
+        assertTrue(Files.exists(html));
     }
+
 
 }

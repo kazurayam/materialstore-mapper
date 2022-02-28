@@ -27,13 +27,16 @@ public class ExcelToCsvMapper implements Mapper {
 
     public MapperResult map(Material excelMaterial) throws IOException {
         Objects.requireNonNull(excelMaterial);
+        assert excelMaterial.getFileType() == FileType.XLSX;
         byte[] data = store.read(excelMaterial);
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // do data format conversion
         Workbook workbook = new XSSFWorkbook(bais);
         Sheet sheet = workbook.getSheetAt(0);
         List<List<String>> grid = readSheet(sheet);
         writeGrid(grid, baos);
+        //
         return new MapperResult(baos.toByteArray(), FileType.CSV);
     }
 
