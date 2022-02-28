@@ -4,6 +4,8 @@ import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.Material;
 import com.kazurayam.materialstore.filesystem.Store;
 
+import com.kazurayam.materialstore.map.Mapper;
+import com.kazurayam.materialstore.map.MappingListener;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.poi.ss.usermodel.*;
@@ -16,18 +18,30 @@ import java.util.*;
 public class ExcelToCsvMapper implements Mapper {
 
     private Store store;
+    private MappingListener listener;
 
     public ExcelToCsvMapper() {
         store = null;
+        listener = null;
     }
 
+    @Override
     public void setStore(Store store) {
         this.store = store;
     }
 
-    public MapperResult map(Material excelMaterial) throws IOException {
+    @Override
+    public void setMappingListener(MappingListener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void map(Material excelMaterial) throws IOException {
         Objects.requireNonNull(excelMaterial);
+        assert store != null;
+        assert listener != null;
         assert excelMaterial.getFileType() == FileType.XLSX;
+        //
         byte[] data = store.read(excelMaterial);
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -37,7 +51,8 @@ public class ExcelToCsvMapper implements Mapper {
         List<List<String>> grid = readSheet(sheet);
         writeGrid(grid, baos);
         //
-        return new MapperResult(baos.toByteArray(), FileType.CSV);
+        listener.onMapped(baos.toByteArray(), FileType.CSV,
+                excelMaterial.getMetadata());
     }
 
     private List<List<String>> readSheet(Sheet sheet) {

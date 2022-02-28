@@ -1,6 +1,7 @@
 package com.kazurayam.materialstore.mapper;
 
 import com.kazurayam.materialstore.filesystem.*;
+import com.kazurayam.materialstore.map.MappedResultSerializer;
 import com.kazurayam.materialstore.metadata.Metadata;
 import com.kazurayam.materialstore.metadata.QueryOnMetadata;
 import org.apache.commons.io.FileUtils;
@@ -44,7 +45,8 @@ public class PdfToHtmlMapperTest {
     public void test_smoke() throws IOException {
         Metadata metadata =
                 Metadata.builder().put("URL.host","www.fsa.go.jp").build();
-        MaterialList materialList = store.select(new JobName("NISA"),
+        JobName jobName = new JobName("NISA");
+        MaterialList materialList = store.select(jobName,
                 new JobTimestamp("20220226_214458"),
                 QueryOnMetadata.builderWithMetadata(metadata).build(),
                 FileType.PDF);
@@ -52,13 +54,15 @@ public class PdfToHtmlMapperTest {
         //
         PdfToHtmlMapper mapper = new PdfToHtmlMapper();
         mapper.setStore(store);
-        MapperResult mapperResult = mapper.map(materialList.get(0));
-        assertTrue(mapperResult.getData().length > 0);
-        assertEquals(FileType.HTML, mapperResult.getFileType());
+        JobTimestamp newTimestamp = JobTimestamp.now();
+        MappedResultSerializer serializer =
+                new MappedResultSerializer(store, jobName, newTimestamp);
+        mapper.setMappingListener(serializer);
+        mapper.map(materialList.get(0));
         //
-        Path html = outputDir.resolve("sample.html");
-        Files.write(html, mapperResult.getData(), StandardOpenOption.CREATE);
-        assertTrue(Files.exists(html));
+        MaterialList result = store.select(jobName, newTimestamp, QueryOnMetadata.ANY);
+        assertTrue(result.size() > 0);
+        assertEquals(FileType.HTML, result.get(0).getFileType());
     }
 
 
