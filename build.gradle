@@ -18,7 +18,7 @@ ext {
 
 dependencies {
     implementation "org.codehaus.groovy:groovy-all:${groovyVersion}"
-    implementation group: 'com.kazurayam', name: 'materialstore', version: '0.4.0-SNAPSHOT'
+    implementation group: 'com.kazurayam', name: 'materialstore', version: '0.4.1'
 
     // https://mvnrepository.com/artifact/org.apache.poi/poi
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
@@ -34,7 +34,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
     implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.25'
 
-// https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-tools
+    // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-tools
     implementation group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.25'
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
