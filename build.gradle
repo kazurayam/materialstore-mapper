@@ -1,9 +1,13 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group 'com.kazurayam'
-version '0.1.0-SNAPSHOT'
+version '0.1.0'
+
+ext.isReleaseVersion = ! version.endsWith("SNAPSHOT")
 
 repositories {
     mavenCentral()
@@ -16,14 +20,25 @@ ext {
     commonsioVersion = '2.8.0'
 }
 
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+def defaultEncoding = 'UTF-8'
+tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
+tasks.withType(GroovyCompile).each {it.groovyOptions.encoding = defaultEncoding }
+
 dependencies {
     implementation "org.codehaus.groovy:groovy-all:${groovyVersion}"
     implementation group: 'com.kazurayam', name: 'materialstore', version: '0.4.1'
 
+
     // https://mvnrepository.com/artifact/org.apache.poi/poi
-    implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
+    //implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
+    implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
+
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
-    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.0'
+    //implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.0'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-csv
     implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.9.0'
@@ -51,3 +66,73 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        materialstore(MavenPublication) {
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                groupId = project.group
+                name = project.rootProject.name
+                description = 'classes that implements com.kazurayam.materialstore.map.Mapper interface, which includes Excel->CSV conversion, PDF->Image conversion'
+                url = 'https://kazurayam.github.io/materialstore-mapper/'
+                from components.java
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org.licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'kazurayam'
+                        name = 'URAYAMA,kazuaki'
+                        email = 'kazuaki.urayama@gmail.com'
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/kazurayam/${project.rootProject.name}.git"
+                    developerConnection = "scm:git:git@github.com:kazurayam/${project.rootProject.name}.git"
+                    url = "https://github.com/kazurayam/${project.rootProject.name}"
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releaseRepo = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = isReleaseVersion ? releaseRepo: snapshotRepo
+            credentials {
+                username = project.hasProperty('ossrhUsername') ? ossrhUsername : "Unknown user"
+                password = project.hasProperty('ossrhPassword') ? ossrhPassword : "Unknown password"
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.materialstore
+}
+// I do not want to sign the SNAPSHOT
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
+}
+
+
+task copyJavadocToDocsDir(type: Copy) {
+    from 'build/docs/javadoc'
+    into 'docs/api'
+}
+javadoc.finalizedBy copyJavadocToDocsDir

@@ -7,18 +7,19 @@ import com.kazurayam.materialstore.metadata.QueryOnMetadata;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExcelToCsvMapperTest {
+@Disabled
+public class ExcelToCsvMapperPOI5Test {
 
     private static Path outputDir;
     private static Path fixtureDir;
@@ -28,7 +29,7 @@ public class ExcelToCsvMapperTest {
     public static void beforeAll() throws IOException {
         Path projectDir = Paths.get(System.getProperty("user.dir"));
         outputDir = projectDir.resolve("build/tmp/testOutput")
-                .resolve(ExcelToCsvMapperTest.class.getName());
+                .resolve(ExcelToCsvMapperPOI5Test.class.getName());
         Files.createDirectories(outputDir);
         //
         fixtureDir = projectDir.resolve("src/test/fixture");
@@ -52,7 +53,7 @@ public class ExcelToCsvMapperTest {
                 FileType.XLSX);
         assertEquals(1, materialList.size());
         //
-        ExcelToCsvMapper mapper = new ExcelToCsvMapper();
+        ExcelToCsvMapperPOI5 mapper = new ExcelToCsvMapperPOI5();
         mapper.setStore(store);
         JobTimestamp newTimestamp = JobTimestamp.now();
         MappedResultSerializer serializer =
