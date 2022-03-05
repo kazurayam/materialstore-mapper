@@ -1,18 +1,12 @@
 package com.kazurayam.materialstore.mapper;
 
-import com.kazurayam.materialstore.filesystem.FileType;
-import com.kazurayam.materialstore.filesystem.Material;
-import com.kazurayam.materialstore.filesystem.Store;
 import com.kazurayam.materialstore.map.Mapper;
-import com.kazurayam.materialstore.map.MappingListener;
-import com.kazurayam.materialstore.metadata.Metadata;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,142 +14,73 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class AmznPressRssToExcelMapper implements Mapper {
+public class RSSAmznPress2ExcelMapper extends RSS2ExcelMapper implements Mapper {
 
     private static final Logger logger =
-            LoggerFactory.getLogger(AmznPressRssToExcelMapper.class);
+            LoggerFactory.getLogger(RSSAmznPress2ExcelMapper.class);
 
     public static final String AMZN_PRESS_URL =
             "https://press.aboutamazon.com/rss/news-releases.xml";
 
-    private Store store;
-    private MappingListener listener;
 
-    public AmznPressRssToExcelMapper() {
-        store = Store.NULL_OBJECT;
-        listener = MappingListener.NULL_OBJECT;
+    public RSSAmznPress2ExcelMapper() {
+        super();
     }
 
     @Override
-    public void setStore(Store store) {
-        Objects.requireNonNull(store);
-        this.store = store;
+    String getSheetName() {
+        return "press.aboutamazon.com";
     }
 
     @Override
-    public void setMappingListener(MappingListener listener) {
-        Objects.requireNonNull(listener);
-        this.listener = listener;
+    List<Map<String, String>> getData(SyndFeed feed) {
+        List<Column> columns = getColumns();
+        List<Map<String, String>> result = new ArrayList<>();
+        List<SyndEntry> entries = feed.getEntries();
+        for (SyndEntry entry : entries) {
+            Map<String, String> data = new HashMap<>();
+            for (Column column : columns) {
+                switch(column.name()) {
+                    case "title":
+                        data.put(column.name(), entry.getTitle());
+                        break;
+                    case "link":
+                        data.put(column.name(), entry.getLink());
+                        break;
+                    case "description":
+                        data.put(column.name(), entry.getDescription().getValue());
+                        break;
+                    case "publishedDate":
+                        data.put(column.name(), entry.getPublishedDate().toString());
+                        break;
+                    case "author":
+                        data.put(column.name(), entry.getAuthor());
+                        break;
+                    case "uri":
+                        data.put(column.name(), entry.getUri());
+                        break;
+                }
+            }
+            result.add(data);
+        }
+        return result;
     }
+
 
     @Override
-    public void map(Material material) throws IOException {
-        Objects.requireNonNull(material);
-        SyndFeed feed = getFeed(material);
-        logger.debug(feed.toString());
-        //
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = createSheet(workbook);
-        // create Header row, place it into the sheet
-        //Row header = createHeaderRow(sheet, getColumnNames());
-        Row header = createHeaderRow(sheet, getColumnNamesOfRSS());
-        logger.debug("header: " + header);
-        // write the data rows with different style
-        //List<Map<String, String>> dataGrid = getData();
-        List<Map<String, String>> dataGrid = getDataOfRSS(feed);
-        for (int i = 0; i < dataGrid.size(); i++) {
-            Row data = createDataRow(sheet,
-                    getColumnNamesOfRSS(),
-                    i + 1, dataGrid.get(i));
-            logger.debug("data: " + data.toString());
-        }
-        // let's write the content into byte[]
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        workbook.write(baos);
-        workbook.close();
-        // let's store the byte[] into the materialstore
-        Metadata metadata =
-                Metadata.builder(material.getMetadata())
-                        .put("foo", "bar")
-                        .build();
-        assert listener != MappingListener.NULL_OBJECT;
-        listener.onMapped(baos.toByteArray(), FileType.XLSX, metadata);
-    }
-
-    private Sheet createSheet(Workbook workbook) {
-        Sheet sheet = workbook.createSheet("Sheet1");
-        sheet.setColumnWidth(0, 6000);
-        sheet.setColumnWidth(1, 4000);
-        return sheet;
-    }
-
-    private Row createHeaderRow(Sheet sheet, List<String> columnNames) {
-        Row header = sheet.createRow(0);
-        CellStyle headerCellStyle = createHeaderCellStyle(sheet.getWorkbook());
-        for (int i = 0; i < columnNames.size(); i++) {
-            Cell headerCell = createCell(header, i, columnNames.get(i), headerCellStyle);
-            logger.debug("headerCell: " + headerCell);
-        }
-        return header;
-    }
-
-    private Row createDataRow(Sheet sheet, List<String> columnNames,
-                              int rowIndex, Map<String, String> rowData) {
-        CellStyle style = createDataCellStyle(sheet.getWorkbook());
-        Row row = sheet.createRow(rowIndex);
-        for (int i = 0; i < rowData.size(); i++) {
-            String key = columnNames.get(i);
-            Cell dc = createCell(row, i, rowData.get(key), style);
-            logger.debug("dc0: " + dc);
-        }
-        return row;
-    }
-
-    private CellStyle createHeaderCellStyle(Workbook workbook) {
-        CellStyle cellStyle = workbook.createCellStyle();
-        cellStyle.setFillForegroundColor(IndexedColors.AQUA.getIndex());
-        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        return cellStyle;
-    }
-
-    private CellStyle createDataCellStyle(Workbook workbook) {
-        CellStyle style = workbook.createCellStyle();
-        style.setWrapText(true);
-        return style;
-    }
-
-    private Cell createCell(Row row, int column, String value, CellStyle style) {
-        Cell cell = row.createCell(column);
-        cell.setCellValue(value);
-        cell.setCellStyle(style);
-        return cell;
-    }
-
-
-    private SyndFeed getFeed(Material material) throws IOException {
-        URL feedSource = material.toURL(store.getRoot());
-        SyndFeedInput input = new SyndFeedInput();
-        SyndFeed feed = null;
-        try {
-            feed = input.build(new XmlReader(feedSource));
-        } catch (FeedException e) {
-            e.printStackTrace();
-        }
-        return feed;
+    List<Column> getColumns() {
+        return Arrays.asList(
+                new Column("publishedDate", 4000),
+                new Column("uri", 2000),
+                new Column("title", 10000),
+                new Column("link", 10000),
+                new Column("description", 21_000),
+                new Column("author", 6000)
+        );
     }
 
     public static void main(String[] args) throws IOException, FeedException {
@@ -165,71 +90,6 @@ public class AmznPressRssToExcelMapper implements Mapper {
         System.out.println("[test_reading_an_external_feed]\n" + feed.toString());
     }
 
-    private List<String> getColumnNames() {
-        return Arrays.asList("Name", "Age");
-    }
-
-    private List<String> getColumnNamesOfRSS() {
-        return Arrays.asList(
-                "title",
-                "link",
-                "description",
-                "publishedDate",
-                "author",
-                "uri"
-                );
-    }
-
-    private List<Map<String, String>> getData() {
-        List<String> columnNames = this.getColumnNames();
-        List<Map<String, String>> grid = new ArrayList<>();
-        grid.add(new HashMap<String, String>() {{
-            put(columnNames.get(0), "Hadrianus");
-            put(columnNames.get(1), "42");
-        }});
-        grid.add(new HashMap<String, String>() {{
-            put(columnNames.get(0), "Antoninus Pius");
-            put(columnNames.get(1), "74");
-        }});
-        grid.add(new HashMap<String, String>() {{
-            put(columnNames.get(0), "Marcus Aurelius");
-            put(columnNames.get(1), "58");
-        }});
-        return grid;
-    }
-
-    private List<Map<String, String>> getDataOfRSS(SyndFeed feed) {
-        List<String> columnNames = getColumnNamesOfRSS();
-        List<Map<String, String>> result = new ArrayList<>();
-        List<SyndEntry> entries = feed.getEntries();
-        for (SyndEntry entry : entries) {
-            Map<String, String> data = new HashMap<>();
-            for (String colName : columnNames) {
-                switch(colName) {
-                    case "title":
-                        data.put(colName, entry.getTitle());
-                        break;
-                    case "link":
-                        data.put(colName, entry.getLink());
-                        break;
-                    case "description":
-                        data.put(colName, entry.getDescription().toString());
-                        break;
-                    case "publishedDate":
-                        data.put(colName, entry.getPublishedDate().toString());
-                        break;
-                    case "author":
-                        data.put(colName, entry.getAuthor());
-                        break;
-                    case "uri":
-                        data.put(colName, entry.getUri());
-                        break;
-                }
-            }
-            result.add(data);
-        }
-        return result;
-    }
 
 /* an example of SyndFeed object serialized from "https://press.aboutamazon.com/rss/news-releases.xml":
 

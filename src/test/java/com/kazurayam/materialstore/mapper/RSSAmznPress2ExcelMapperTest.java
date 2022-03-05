@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AmznPressRssToExcelMapperTest {
+public class RSSAmznPress2ExcelMapperTest {
 
     private static URL url;
     private static Path outputDir;
@@ -39,7 +39,7 @@ public class AmznPressRssToExcelMapperTest {
     public static void beforeAll() throws IOException {
         Path projectDir = Paths.get(System.getProperty("user.dir"));
         outputDir = projectDir.resolve("build/tmp/testOutput")
-                .resolve(AmznPressRssToExcelMapperTest.class.getName());
+                .resolve(RSSAmznPress2ExcelMapperTest.class.getName());
         Files.createDirectories(outputDir);
         Path root = outputDir.resolve("store");
         store = Stores.newInstance(root);
@@ -85,7 +85,7 @@ public class AmznPressRssToExcelMapperTest {
         URLMaterializer materializer = new URLMaterializer(store);
         Material rssXml = materializer.materialize(url, jobName, jobTimestamp, FileType.XML);
         //
-        AmznPressRssToExcelMapper mapper = new AmznPressRssToExcelMapper();
+        RSSAmznPress2ExcelMapper mapper = new RSSAmznPress2ExcelMapper();
         mapper.setStore(store);
         MappingListener serializer =
                 new MappedResultSerializer(store, jobName, jobTimestamp);

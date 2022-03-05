@@ -3,9 +3,9 @@ package com.kazurayam.materialstore.mapper;
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.Material;
 import com.kazurayam.materialstore.filesystem.Store;
+
 import com.kazurayam.materialstore.map.Mapper;
 import com.kazurayam.materialstore.map.MappingListener;
-import com.kazurayam.materialstore.metadata.Metadata;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.poi.ss.usermodel.*;
@@ -13,22 +13,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Apache POI v3.17
  */
-public class ExcelToCsvMapperPOI3 implements Mapper {
+public class Excel2CSVMapperPOI5 implements Mapper {
 
     private Store store;
     private MappingListener listener;
 
-    private String key_sheet_index = "sheet_index";
-    private String key_sheet_name = "sheet_name";
-
-    public ExcelToCsvMapperPOI3() {
+    public Excel2CSVMapperPOI5() {
         store = null;
         listener = null;
     }
@@ -55,35 +50,16 @@ public class ExcelToCsvMapperPOI3 implements Mapper {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // do data format conversion
         Workbook workbook = new XSSFWorkbook(bais);
-        int numberOfSheets = workbook.getNumberOfSheets();
-        for (int i = 0; i < numberOfSheets; i++) {
-            Sheet sheet = workbook.getSheetAt(i);
-            List<List<String>> grid = readSheet(sheet);
-            writeGrid(grid, baos);
-            Metadata metadata =
-                    Metadata.builder(excelMaterial.getMetadata())
-                            .put(key_sheet_index, Integer.toString(i))
-                            .put(key_sheet_name, sheet.getSheetName())
-                            .build();
-            listener.onMapped(baos.toByteArray(), FileType.CSV,
-                    metadata);
-        }
-    }
-
-    public void setKeySheetIndex(String key) {
-        this.key_sheet_index = key;
-    }
-
-    public void setKeySheetName(String key) {
-        this.key_sheet_name = key;
+        // FIX ME
     }
 
     private List<List<String>> readSheet(Sheet sheet) {
         List<List<String>> grid = new ArrayList<>();
         for (Row row : sheet) {
             List<String> cols = new ArrayList<>();
+            /*
             for (Cell cell : row) {
-                switch (cell.getCellTypeEnum()) {
+                switch (cell.getCellType()) {
                     case STRING:
                         cols.add(cell.getRichStringCellValue().getString());
                         break;
@@ -104,6 +80,7 @@ public class ExcelToCsvMapperPOI3 implements Mapper {
                         cols.add(" ");
                 }
             }
+             */
             grid.add(cols);
         }
         return grid;

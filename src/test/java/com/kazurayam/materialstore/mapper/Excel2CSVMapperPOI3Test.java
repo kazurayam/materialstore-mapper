@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExcelToCsvMapperPOI3Test {
+public class Excel2CSVMapperPOI3Test {
 
     private static Path outputDir;
     private static Path fixtureDir;
@@ -27,7 +27,7 @@ public class ExcelToCsvMapperPOI3Test {
     public static void beforeAll() throws IOException {
         Path projectDir = Paths.get(System.getProperty("user.dir"));
         outputDir = projectDir.resolve("build/tmp/testOutput")
-                .resolve(ExcelToCsvMapperPOI3Test.class.getName());
+                .resolve(Excel2CSVMapperPOI3Test.class.getName());
         Files.createDirectories(outputDir);
         //
         fixtureDir = projectDir.resolve("src/test/fixture");
@@ -51,7 +51,7 @@ public class ExcelToCsvMapperPOI3Test {
                 FileType.XLSX);
         assertEquals(1, materialList.size());
         //
-        ExcelToCsvMapperPOI3 mapper = new ExcelToCsvMapperPOI3();
+        Excel2CSVMapperPOI3 mapper = new Excel2CSVMapperPOI3();
         //
         mapper.setStore(store);
         JobTimestamp newTimestamp = JobTimestamp.now();

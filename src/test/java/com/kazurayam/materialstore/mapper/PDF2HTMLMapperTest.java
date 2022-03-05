@@ -13,12 +13,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfToImageMapperTest {
+public class PDF2HTMLMapperTest {
 
     private static Path outputDir;
     private static Path fixtureDir;
@@ -28,7 +27,7 @@ public class PdfToImageMapperTest {
     public static void beforeAll() throws IOException {
         Path projectDir = Paths.get(System.getProperty("user.dir"));
         outputDir = projectDir.resolve("build/tmp/testOutput")
-                .resolve(PdfToImageMapperTest.class.getName());
+                .resolve(PDF2HTMLMapperTest.class.getName());
         Files.createDirectories(outputDir);
         //
         fixtureDir = projectDir.resolve("src/test/fixture");
@@ -46,14 +45,13 @@ public class PdfToImageMapperTest {
         Metadata metadata =
                 Metadata.builder().put("URL.host","www.fsa.go.jp").build();
         JobName jobName = new JobName("NISA");
-        MaterialList materialList =
-                store.select(jobName,
-                        new JobTimestamp("20220226_214458"),
-                        QueryOnMetadata.builder(metadata).build(),
-                        FileType.PDF);
+        MaterialList materialList = store.select(jobName,
+                new JobTimestamp("20220226_214458"),
+                QueryOnMetadata.builder(metadata).build(),
+                FileType.PDF);
         assertEquals(1, materialList.size());
         //
-        PdfToImageMapper mapper = new PdfToImageMapper();
+        PDF2HTMLMapper mapper = new PDF2HTMLMapper();
         mapper.setStore(store);
         JobTimestamp newTimestamp = JobTimestamp.now();
         MappedResultSerializer serializer =
@@ -63,6 +61,8 @@ public class PdfToImageMapperTest {
         //
         MaterialList result = store.select(jobName, newTimestamp, QueryOnMetadata.ANY);
         assertTrue(result.size() > 0);
-        assertEquals(FileType.PNG, result.get(0).getFileType());
+        assertEquals(FileType.HTML, result.get(0).getFileType());
     }
+
+
 }
