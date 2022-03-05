@@ -2,6 +2,7 @@ package com.kazurayam.materialstore.mapper;
 
 import com.kazurayam.materialstore.filesystem.*;
 import com.kazurayam.materialstore.map.MappedResultSerializer;
+import com.kazurayam.materialstore.map.MappingListener;
 import com.kazurayam.materialstore.metadata.Metadata;
 import com.kazurayam.materialstore.metadata.QueryOnMetadata;
 import org.apache.commons.io.FileUtils;
@@ -56,7 +57,7 @@ public class ExcelToCsvMapperPOI5Test {
         ExcelToCsvMapperPOI5 mapper = new ExcelToCsvMapperPOI5();
         mapper.setStore(store);
         JobTimestamp newTimestamp = JobTimestamp.now();
-        MappedResultSerializer serializer =
+        MappingListener serializer =
                 new MappedResultSerializer(store, jobName, newTimestamp);
         mapper.setMappingListener(serializer);
         mapper.map(materialList.get(0));

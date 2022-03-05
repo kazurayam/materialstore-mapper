@@ -4,13 +4,16 @@ import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.JobName;
 import com.kazurayam.materialstore.filesystem.JobTimestamp;
 import com.kazurayam.materialstore.filesystem.Material;
+import com.kazurayam.materialstore.filesystem.MaterialList;
 import com.kazurayam.materialstore.filesystem.Store;
 import com.kazurayam.materialstore.filesystem.Stores;
+import com.kazurayam.materialstore.map.MappedResultSerializer;
+import com.kazurayam.materialstore.map.MappingListener;
 import com.kazurayam.materialstore.materialize.URLDownloader;
 import com.kazurayam.materialstore.materialize.URLMaterializer;
-import com.kazurayam.materialstore.metadata.Metadata;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -20,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -50,6 +54,7 @@ public class AmznPressRssToExcelMapperTest {
         }
     }
 
+    @Disabled
     @Test
     void test_download_xml() throws IOException {
         Path tempFile = Files.createTempFile(null, null);
@@ -59,9 +64,10 @@ public class AmznPressRssToExcelMapperTest {
     }
 
 
+    @Disabled
     @Test
     void test_materialize_xml() throws IOException {
-        jobName = new JobName("AmznPressRssToExcelMapperTest");
+        jobName = new JobName("test_materialize_xml");
         jobTimestamp = JobTimestamp.now();
         URLMaterializer materializer = new URLMaterializer(store);
         Material material = materializer.materialize(url, jobName, jobTimestamp, FileType.XML);
@@ -71,5 +77,22 @@ public class AmznPressRssToExcelMapperTest {
         assertTrue(f.toFile().length() > 0);
     }
 
-
+    @Test
+    void test_map() throws IOException {
+        // prepare the XML file as the source material
+        jobName = new JobName("test_map");
+        jobTimestamp = JobTimestamp.now();
+        URLMaterializer materializer = new URLMaterializer(store);
+        Material rssXml = materializer.materialize(url, jobName, jobTimestamp, FileType.XML);
+        //
+        AmznPressRssToExcelMapper mapper = new AmznPressRssToExcelMapper();
+        mapper.setStore(store);
+        MappingListener serializer =
+                new MappedResultSerializer(store, jobName, jobTimestamp);
+        mapper.setMappingListener(serializer);
+        mapper.map(rssXml);
+        //
+        MaterialList materialList = store.select(jobName, jobTimestamp, FileType.XLSX);
+        assertEquals(1, materialList.size());
+    }
 }
