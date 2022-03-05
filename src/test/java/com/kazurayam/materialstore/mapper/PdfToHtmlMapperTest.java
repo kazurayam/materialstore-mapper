@@ -48,7 +48,7 @@ public class PdfToHtmlMapperTest {
         JobName jobName = new JobName("NISA");
         MaterialList materialList = store.select(jobName,
                 new JobTimestamp("20220226_214458"),
-                QueryOnMetadata.builderWithMetadata(metadata).build(),
+                QueryOnMetadata.builder(metadata).build(),
                 FileType.PDF);
         assertEquals(1, materialList.size());
         //
