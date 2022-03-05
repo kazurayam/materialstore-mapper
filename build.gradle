@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.kazurayam'
-version '0.1.1'
+version '0.1.2-SNAPSHOT'
 
 ext.isReleaseVersion = ! version.endsWith("SNAPSHOT")
 
@@ -29,8 +29,7 @@ tasks.withType(GroovyCompile).each {it.groovyOptions.encoding = defaultEncoding 
 
 dependencies {
     implementation "org.codehaus.groovy:groovy-all:${groovyVersion}"
-    implementation group: 'com.kazurayam', name: 'materialstore', version: '0.4.5-SNAPSHOT'
-
+    implementation group: 'com.kazurayam', name: 'materialstore', version: '0.4.7-SNAPSHOT'
 
     // https://mvnrepository.com/artifact/org.apache.poi/poi
     //implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
@@ -51,6 +50,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-tools
     implementation group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.25'
+
+    // https://mvnrepository.com/artifact/com.rometools/rome
+    implementation group: 'com.rometools', name: 'rome', version: '1.18.0'
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"

@@ -18,9 +18,11 @@ import org.slf4j.LoggerFactory;
 
 public class AmznPressRssToExcelMapper implements Mapper {
 
-    private static final Logger logger = LoggerFactory.getLogger(AmznPressRssToExcelMapper.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(AmznPressRssToExcelMapper.class);
 
-    public static final String AMZN_PRESS_URL = "https://press.aboutamazon.com/rss/news-releases.xml";
+    public static final String AMZN_PRESS_URL =
+            "https://press.aboutamazon.com/rss/news-releases.xml";
 
     private Store store;
     private MappingListener listener;
