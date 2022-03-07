@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Objects;
 
-public class PDF2ImageMapper implements Mapper {
+public final class PDF2ImageMapper implements Mapper {
 
     private Store store = null;
     private MappingListener listener = null;

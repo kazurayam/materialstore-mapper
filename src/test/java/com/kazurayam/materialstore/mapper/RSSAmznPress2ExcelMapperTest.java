@@ -80,7 +80,7 @@ public class RSSAmznPress2ExcelMapperTest {
     @Test
     void test_map() throws IOException {
         // prepare the XML file as the source material
-        jobName = new JobName("test_map");
+        jobName = new JobName("AmznPress");
         jobTimestamp = JobTimestamp.now();
         URLMaterializer materializer = new URLMaterializer(store);
         Material rssXml = materializer.materialize(url, jobName, jobTimestamp, FileType.XML);

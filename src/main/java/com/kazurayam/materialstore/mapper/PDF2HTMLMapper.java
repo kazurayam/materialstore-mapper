@@ -12,7 +12,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class PDF2HTMLMapper implements Mapper {
+public final class PDF2HTMLMapper implements Mapper {
 
     private Store store;
     private MappingListener listener;

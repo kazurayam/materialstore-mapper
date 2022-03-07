@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * Apache POI v3.17
  */
-public class Excel2CSVMapperPOI3 implements Mapper {
+public final class Excel2CSVMapperPOI3 implements Mapper {
 
     private Store store;
     private MappingListener listener;

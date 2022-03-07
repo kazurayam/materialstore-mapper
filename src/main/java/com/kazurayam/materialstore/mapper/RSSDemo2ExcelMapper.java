@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RSSDemo2ExcelMapper extends RSS2ExcelMapper implements Mapper {
+public final class RSSDemo2ExcelMapper extends RSS2ExcelMapper implements Mapper {
 
     private static final Logger logger =
             LoggerFactory.getLogger(RSSDemo2ExcelMapper.class);
