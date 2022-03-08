@@ -1,0 +1,1 @@
+- https://kazurayam.github.io/materialstore-mapper/api/index.html[materialstore-mapper javadoc]
