@@ -2,17 +2,19 @@ package com.kazurayam.materialstore.mapper;
 
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.Material;
+import com.kazurayam.materialstore.filesystem.Metadata;
 import com.kazurayam.materialstore.filesystem.Store;
 import com.kazurayam.materialstore.map.Mapper;
 import com.kazurayam.materialstore.map.MappingListener;
-import com.kazurayam.materialstore.metadata.Metadata;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
 
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 public final class PDF2ImageMapper implements Mapper {

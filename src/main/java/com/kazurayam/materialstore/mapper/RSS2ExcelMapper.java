@@ -2,11 +2,10 @@ package com.kazurayam.materialstore.mapper;
 
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.Material;
+import com.kazurayam.materialstore.filesystem.Metadata;
 import com.kazurayam.materialstore.filesystem.Store;
 import com.kazurayam.materialstore.map.Mapper;
 import com.kazurayam.materialstore.map.MappingListener;
-
-import com.kazurayam.materialstore.metadata.Metadata;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
