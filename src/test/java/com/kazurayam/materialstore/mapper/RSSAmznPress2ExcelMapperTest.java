@@ -1,5 +1,6 @@
 package com.kazurayam.materialstore.mapper;
 
+import com.kazurayam.materialstore.MaterialstoreException;
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.JobName;
 import com.kazurayam.materialstore.filesystem.JobTimestamp;
@@ -66,7 +67,7 @@ public class RSSAmznPress2ExcelMapperTest {
 
     @Disabled
     @Test
-    void test_materialize_xml() throws IOException {
+    void test_materialize_xml() throws IOException, MaterialstoreException {
         jobName = new JobName("test_materialize_xml");
         jobTimestamp = JobTimestamp.now();
         URLMaterializer materializer = new URLMaterializer(store);
@@ -78,7 +79,7 @@ public class RSSAmznPress2ExcelMapperTest {
     }
 
     @Test
-    void test_map() throws IOException {
+    void test_map() throws IOException, MaterialstoreException {
         // prepare the XML file as the source material
         jobName = new JobName("AmznPress");
         jobTimestamp = JobTimestamp.now();

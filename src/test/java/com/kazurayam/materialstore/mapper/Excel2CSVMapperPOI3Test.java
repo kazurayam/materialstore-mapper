@@ -1,5 +1,6 @@
 package com.kazurayam.materialstore.mapper;
 
+import com.kazurayam.materialstore.MaterialstoreException;
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.JobName;
 import com.kazurayam.materialstore.filesystem.JobTimestamp;
@@ -46,7 +47,7 @@ public class Excel2CSVMapperPOI3Test {
     }
 
     @Test
-    public void test_smoke() throws IOException {
+    public void test_smoke() throws MaterialstoreException {
         Metadata metadata =
                 Metadata.builder().put("URL.host","www.fsa.go.jp").build();
         JobName jobName = new JobName("NISA");

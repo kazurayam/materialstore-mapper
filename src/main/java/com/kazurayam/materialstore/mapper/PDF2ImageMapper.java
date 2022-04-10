@@ -1,5 +1,6 @@
 package com.kazurayam.materialstore.mapper;
 
+import com.kazurayam.materialstore.MaterialstoreException;
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.Material;
 import com.kazurayam.materialstore.filesystem.Metadata;
@@ -21,7 +22,6 @@ public final class PDF2ImageMapper implements Mapper {
 
     private Store store = null;
     private MappingListener listener = null;
-    private static final FileType imageType = FileType.PNG;
 
     @Override
     public void setStore(Store store) {
@@ -38,7 +38,7 @@ public final class PDF2ImageMapper implements Mapper {
      * https://www.baeldung.com/pdf-conversions-java
      */
     @Override
-    public void map(Material pdfMaterial) throws IOException {
+    public void map(Material pdfMaterial) throws MaterialstoreException {
         Objects.requireNonNull(pdfMaterial);
         assert store != null;
         assert listener != null;
@@ -47,20 +47,24 @@ public final class PDF2ImageMapper implements Mapper {
         byte[] data = store.read(pdfMaterial);
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         // do data format conversion
-        PDDocument document = PDDocument.load(bais);
-        PDFRenderer pdfRenderer = new PDFRenderer(document);
-        for (int page = 0; page < document.getNumberOfPages(); ++page) {
-            BufferedImage bim = pdfRenderer.renderImageWithDPI(
-                    page, 300, ImageType.RGB);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIOUtil.writeImage(
-                    bim, "png", baos, 300);
-            //
-            Metadata metadataWithPage=
-                    Metadata.builder(pdfMaterial.getMetadata())
-                            .put("page", Integer.toString(page + 1))
-                            .build();
-            listener.onMapped(baos.toByteArray(), FileType.PNG, metadataWithPage);
+        try {
+            PDDocument document = PDDocument.load(bais);
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
+            for (int page = 0; page < document.getNumberOfPages(); ++page) {
+                BufferedImage bim = pdfRenderer.renderImageWithDPI(
+                        page, 300, ImageType.RGB);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIOUtil.writeImage(
+                        bim, "png", baos, 300);
+                //
+                Metadata metadataWithPage =
+                        Metadata.builder(pdfMaterial.getMetadata())
+                                .put("page", Integer.toString(page + 1))
+                                .build();
+                listener.onMapped(baos.toByteArray(), FileType.PNG, metadataWithPage);
+            }
+        } catch (IOException e) {
+            throw new MaterialstoreException(e);
         }
     }
 }

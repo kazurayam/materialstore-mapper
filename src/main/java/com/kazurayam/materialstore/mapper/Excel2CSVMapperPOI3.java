@@ -1,5 +1,6 @@
 package com.kazurayam.materialstore.mapper;
 
+import com.kazurayam.materialstore.MaterialstoreException;
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.Material;
 import com.kazurayam.materialstore.filesystem.Metadata;
@@ -33,8 +34,8 @@ public final class Excel2CSVMapperPOI3 implements Mapper {
     private Store store;
     private MappingListener listener;
 
-    private String key_sheet_index = "sheet_index";
-    private String key_sheet_name = "sheet_name";
+    private final String key_sheet_index = "sheet_index";
+    private final String key_sheet_name = "sheet_name";
 
     public Excel2CSVMapperPOI3() {
         store = null;
@@ -52,7 +53,7 @@ public final class Excel2CSVMapperPOI3 implements Mapper {
     }
 
     @Override
-    public void map(Material excelMaterial) throws IOException {
+    public void map(Material excelMaterial) throws MaterialstoreException {
         Objects.requireNonNull(excelMaterial);
         assert store != null;
         assert listener != null;
@@ -62,12 +63,21 @@ public final class Excel2CSVMapperPOI3 implements Mapper {
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // do data format conversion
-        Workbook workbook = new XSSFWorkbook(bais);
+        Workbook workbook;
+        try {
+            workbook = new XSSFWorkbook(bais);
+        } catch (IOException e) {
+            throw new MaterialstoreException(e);
+        }
         int numberOfSheets = workbook.getNumberOfSheets();
         for (int i = 0; i < numberOfSheets; i++) {
             Sheet sheet = workbook.getSheetAt(i);
             List<List<String>> grid = readSheet(sheet);
-            writeGrid(grid, baos);
+            try {
+                writeGrid(grid, baos);
+            } catch (IOException e) {
+                throw new MaterialstoreException(e);
+            }
             Metadata metadata =
                     Metadata.builder(excelMaterial.getMetadata())
                             .put(key_sheet_index, Integer.toString(i))
@@ -76,14 +86,6 @@ public final class Excel2CSVMapperPOI3 implements Mapper {
             listener.onMapped(baos.toByteArray(), FileType.CSV,
                     metadata);
         }
-    }
-
-    public void setKeySheetIndex(String key) {
-        this.key_sheet_index = key;
-    }
-
-    public void setKeySheetName(String key) {
-        this.key_sheet_name = key;
     }
 
     private List<List<String>> readSheet(Sheet sheet) {

@@ -1,5 +1,6 @@
 package com.kazurayam.materialstore.mapper;
 
+import com.kazurayam.materialstore.MaterialstoreException;
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.Material;
 import com.kazurayam.materialstore.filesystem.Store;
@@ -33,7 +34,7 @@ public final class PDF2HTMLMapper implements Mapper {
     }
 
     @Override
-    public void map(Material pdfMaterial) throws IOException {
+    public void map(Material pdfMaterial) throws MaterialstoreException {
         Objects.requireNonNull(pdfMaterial);
         assert store != null;
         assert listener != null;
@@ -43,11 +44,15 @@ public final class PDF2HTMLMapper implements Mapper {
         ByteArrayInputStream bais = new ByteArrayInputStream(data);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // do data format conversion
-        PDDocument pdf = PDDocument.load(bais);
-        Writer writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
-        new PDFDomTree().writeText(pdf, writer);
-        writer.flush();
-        writer.close();
+        try {
+            PDDocument pdf = PDDocument.load(bais);
+            Writer writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
+            new PDFDomTree().writeText(pdf, writer);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            throw new MaterialstoreException(e);
+        }
         //
         listener.onMapped(baos.toByteArray(), FileType.HTML,
                 pdfMaterial.getMetadata());

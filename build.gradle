@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.kazurayam'
-version '0.6.0'
+version '0.7.0'
 
 ext.isReleaseVersion = ! version.endsWith("SNAPSHOT")
 
@@ -15,7 +15,6 @@ repositories {
 }
 
 ext {
-    groovyVersion = '2.4.20'
     slf4jVersion = '1.7.31'
     commonsioVersion = '2.8.0'
 }
@@ -29,7 +28,7 @@ tasks.withType(GroovyCompile).each {it.groovyOptions.encoding = defaultEncoding 
 
 dependencies {
 
-    implementation group: 'com.kazurayam', name: 'materialstore', version: '0.6.2'
+    implementation group: 'com.kazurayam', name: 'materialstore', version: '0.7.0'
 
     // https://mvnrepository.com/artifact/org.apache.poi/poi
     //implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'

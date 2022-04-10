@@ -1,9 +1,12 @@
 package com.kazurayam.materialstore.mapper;
 
+import com.kazurayam.materialstore.MaterialstoreException;
 import com.kazurayam.materialstore.filesystem.FileType;
 import com.kazurayam.materialstore.filesystem.Material;
 import com.kazurayam.materialstore.filesystem.Metadata;
 import com.kazurayam.materialstore.filesystem.Store;
+import com.kazurayam.materialstore.filesystem.StoreImpl;
+import com.kazurayam.materialstore.map.MappedResultSerializer;
 import com.kazurayam.materialstore.map.Mapper;
 import com.kazurayam.materialstore.map.MappingListener;
 import com.rometools.rome.feed.synd.SyndFeed;
@@ -37,8 +40,8 @@ public abstract class RSS2ExcelMapper implements Mapper {
     protected MappingListener listener;
 
     public RSS2ExcelMapper() {
-        store = Store.NULL_OBJECT;
-        listener = MappingListener.NULL_OBJECT;
+        store = StoreImpl.NULL_OBJECT;
+        listener = MappedResultSerializer.NULL_OBJECT;
     }
 
     @Override
@@ -54,7 +57,7 @@ public abstract class RSS2ExcelMapper implements Mapper {
     }
 
     @Override
-    public void map(Material material) throws IOException {
+    public void map(Material material) throws MaterialstoreException {
         Objects.requireNonNull(material);
         SyndFeed feed = getFeed(material);
         logger.debug(feed.toString());
@@ -76,14 +79,18 @@ public abstract class RSS2ExcelMapper implements Mapper {
         }
         // let's write the content into byte[]
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        workbook.write(baos);
-        workbook.close();
+        try {
+            workbook.write(baos);
+            workbook.close();
+        } catch (IOException e) {
+            throw new MaterialstoreException(e);
+        }
         // let's store the byte[] into the materialstore
         Metadata metadata =
                 Metadata.builder(material.getMetadata())
                         .put("foo", "bar")
                         .build();
-        assert listener != MappingListener.NULL_OBJECT;
+        assert listener != MappedResultSerializer.NULL_OBJECT;
         listener.onMapped(baos.toByteArray(), FileType.XLSX, metadata);
     }
 
@@ -93,16 +100,20 @@ public abstract class RSS2ExcelMapper implements Mapper {
 
     abstract List<Column> getColumns();
 
-    private SyndFeed getFeed(Material material) throws IOException {
-        URL feedSource = material.toURL(store.getRoot());
-        SyndFeedInput input = new SyndFeedInput();
-        SyndFeed feed = null;
+    private SyndFeed getFeed(Material material) throws MaterialstoreException {
         try {
-            feed = input.build(new XmlReader(feedSource));
-        } catch (FeedException e) {
-            e.printStackTrace();
+            URL feedSource = material.toURL(store.getRoot());
+            SyndFeedInput input = new SyndFeedInput();
+            SyndFeed feed = null;
+            try {
+                feed = input.build(new XmlReader(feedSource));
+            } catch (FeedException e) {
+                e.printStackTrace();
+            }
+            return feed;
+        } catch (IOException e) {
+            throw new MaterialstoreException(e);
         }
-        return feed;
     }
 
     private Sheet createSheet(Workbook workbook, String sheetName, List<Column> columns) {
@@ -161,9 +172,9 @@ public abstract class RSS2ExcelMapper implements Mapper {
     /**
      *
      */
-    protected class Column {
-        private String name;
-        private int width;
+    protected static class Column {
+        private final String name;
+        private final int width;
         Column(String name, int width) {
             this.name = name;
             this.width = width;
