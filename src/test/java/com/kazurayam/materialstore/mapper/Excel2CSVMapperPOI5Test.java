@@ -56,8 +56,8 @@ public class Excel2CSVMapperPOI5Test {
         JobName jobName = new JobName("NISA");
         MaterialList materialList = store.select(jobName,
                 new JobTimestamp("20220226_214458"),
-                QueryOnMetadata.builder(metadata).build(),
-                FileType.XLSX);
+                FileType.XLSX,
+                QueryOnMetadata.builder(metadata).build());
         assertEquals(1, materialList.size());
         //
         Excel2CSVMapperPOI5 mapper = new Excel2CSVMapperPOI5();

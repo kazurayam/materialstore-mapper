@@ -53,8 +53,8 @@ public class PDF2HTMLMapperTest {
         JobName jobName = new JobName("NISA");
         MaterialList materialList = store.select(jobName,
                 new JobTimestamp("20220226_214458"),
-                QueryOnMetadata.builder(metadata).build(),
-                FileType.PDF);
+                FileType.PDF,
+                QueryOnMetadata.builder(metadata).build());
         assertEquals(1, materialList.size());
         //
         PDF2HTMLMapper mapper = new PDF2HTMLMapper();
