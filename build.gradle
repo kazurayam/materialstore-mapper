@@ -26,6 +26,7 @@ tasks.withType(GroovyCompile).each {it.groovyOptions.encoding = defaultEncoding 
 
 dependencies {
     implementation libs.materialstore
+    implementation libs.gson
     implementation libs.poi3
     implementation libs.poi3.ooxml
     implementation libs.commons.csv
