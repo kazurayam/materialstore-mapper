@@ -70,7 +70,7 @@ public class RomeTest {
 
     @Test
     void test_reading_an_external_feed() throws IOException, FeedException {
-        URL feedSource = new URL("https://press.aboutamazon.com/rss/news-releases.xml");
+        URL feedSource = new URL("https://www.data.jma.go.jp/rss/jma.rss");
         SyndFeedInput input = new SyndFeedInput();
         SyndFeed feed = input.build(new XmlReader(feedSource));
         System.out.println("[test_reading_an_external_feed]\n" +

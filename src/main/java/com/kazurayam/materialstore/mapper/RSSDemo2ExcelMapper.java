@@ -1,6 +1,6 @@
 package com.kazurayam.materialstore.mapper;
 
-import com.kazurayam.materialstore.map.Mapper;
+import com.kazurayam.materialstore.core.map.Mapper;
 import com.rometools.rome.feed.synd.SyndFeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
