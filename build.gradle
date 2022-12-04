@@ -1,11 +1,11 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id 'maven-publish'
     id 'signing'
 }
 
 group 'com.kazurayam'
-version '0.8.4'
+version '0.9.0'
 
 ext.isReleaseVersion = ! version.endsWith("SNAPSHOT")
 
@@ -15,8 +15,6 @@ repositories {
 }
 
 ext {
-    slf4jVersion = '1.7.31'
-    commonsioVersion = '2.8.0'
 }
 
 sourceCompatibility = '1.8'
@@ -27,41 +25,20 @@ tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
 tasks.withType(GroovyCompile).each {it.groovyOptions.encoding = defaultEncoding }
 
 dependencies {
-
-    implementation group: 'com.kazurayam', name: 'materialstore', version: '0.8.4'
-
-    // https://mvnrepository.com/artifact/org.apache.poi/poi
-    //implementation group: 'org.apache.poi', name: 'poi', version: '5.2.0'
-    implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
-
-    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
-    //implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.0'
-    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
-
-    // https://mvnrepository.com/artifact/org.apache.commons/commons-csv
-    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.9.0'
-
-    // https://mvnrepository.com/artifact/net.sf.cssbox/pdf2dom
-    implementation group: 'net.sf.cssbox', name: 'pdf2dom', version: '2.0.1'
-
-    // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
-    implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.25'
-
-    // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox-tools
-    implementation group: 'org.apache.pdfbox', name: 'pdfbox-tools', version: '2.0.25'
-
-    // https://mvnrepository.com/artifact/com.rometools/rome
-    implementation group: 'com.rometools', name: 'rome', version: '1.18.0'
-
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
-    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
-    // https://mvnrepository.com/artifact/commons-io/commons-io
-    testImplementation group: 'commons-io', name: 'commons-io', version: "${commonsioVersion}"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    // https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.1'
-
+    implementation libs.materialstore
+    implementation libs.gson
+    implementation libs.poi3
+    implementation libs.poi3.ooxml
+    implementation libs.commons.csv
+    implementation libs.pdf2dom
+    implementation libs.pdfbox
+    implementation libs.pdfbox.tools
+    implementation libs.rome
+    testImplementation libs.slf4j.api
+    testRuntimeOnly libs.slf4j.simple
+    testImplementation libs.commons.io
+    testImplementation libs.junit.jupiter
+    testImplementation libs.junit.jupiter.api
 }
 
 test {

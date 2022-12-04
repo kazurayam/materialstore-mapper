@@ -1,2 +1,47 @@
 rootProject.name = 'materialstore-mapper'
 
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            version('commons-io', '2.11.0')
+            library('commons-io', 'commons-io', 'commons-io').versionRef('commons-io')
+
+            version('commons-csv', '1.9.0')
+            library('commons-csv', 'org.apache.commons', 'commons-csv').versionRef('commons-csv')
+
+            version('gson', '2.8.2')
+            library('gson', 'com.google.code.gson', 'gson').versionRef('gson')
+
+            version('junit5', '5.8.2')
+            library('junit-jupiter', 'org.junit.jupiter', 'junit-jupiter').versionRef('junit5')
+            library('junit-jupiter-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junit5')
+            library('junit-jupiter-engine', 'org.junit.jupiter', 'junit-jupiter-engine').versionRef('junit5')
+
+            version('materialstore', '0.12.5')
+            library('materialstore', 'com.kazurayam', 'materialstore').versionRef('materialstore')
+
+            version('pdf2dom', '2.0.1')
+            library('pdf2dom', 'net.sf.cssbox', 'pdf2dom').versionRef('pdf2dom')
+
+            version('pdfbox', '2.0.26')
+            library('pdfbox', 'org.apache.pdfbox', 'pdfbox').versionRef('pdfbox')
+            library('pdfbox-tools', 'org.apache.pdfbox', 'pdfbox-tools').versionRef('pdfbox')
+
+            version('poi3', '3.17')
+            library('poi3', 'org.apache.poi', 'poi-ooxml').versionRef('poi3')
+            library('poi3-ooxml', 'org.apache.poi', 'poi-ooxml').versionRef('poi3')
+
+            version('poi5', '5.2.0')
+            library('poi5', 'org.apache.poi', 'poi-ooxml').versionRef('poi5')
+            library('poi5-ooxml', 'org.apache.poi', 'poi-ooxml').versionRef('poi5')
+
+            version('rome', '1.18.0')
+            library('rome', 'com.rometools', 'rome').versionRef('rome')
+
+            version('slf4j', '1.7.25')
+            library('slf4j-api', 'org.slf4j', 'slf4j-api').versionRef('slf4j')
+            library('slf4j-simple', 'org.slf4j', 'slf4j-simple').versionRef('slf4j')
+
+        }
+    }
+}

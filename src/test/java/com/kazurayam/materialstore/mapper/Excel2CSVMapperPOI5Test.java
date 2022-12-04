@@ -1,16 +1,16 @@
 package com.kazurayam.materialstore.mapper;
 
-import com.kazurayam.materialstore.MaterialstoreException;
-import com.kazurayam.materialstore.filesystem.FileType;
-import com.kazurayam.materialstore.filesystem.JobName;
-import com.kazurayam.materialstore.filesystem.JobTimestamp;
-import com.kazurayam.materialstore.filesystem.MaterialList;
-import com.kazurayam.materialstore.filesystem.Metadata;
-import com.kazurayam.materialstore.filesystem.QueryOnMetadata;
-import com.kazurayam.materialstore.filesystem.Store;
-import com.kazurayam.materialstore.filesystem.Stores;
-import com.kazurayam.materialstore.map.MappedResultSerializer;
-import com.kazurayam.materialstore.map.MappingListener;
+import com.kazurayam.materialstore.core.filesystem.FileType;
+import com.kazurayam.materialstore.core.filesystem.JobName;
+import com.kazurayam.materialstore.core.filesystem.JobTimestamp;
+import com.kazurayam.materialstore.core.filesystem.MaterialList;
+import com.kazurayam.materialstore.core.filesystem.MaterialstoreException;
+import com.kazurayam.materialstore.core.filesystem.Metadata;
+import com.kazurayam.materialstore.core.filesystem.QueryOnMetadata;
+import com.kazurayam.materialstore.core.filesystem.Store;
+import com.kazurayam.materialstore.core.filesystem.Stores;
+import com.kazurayam.materialstore.core.map.MappedResultSerializer;
+import com.kazurayam.materialstore.core.map.MappingListener;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Excel2CSVMapperPOI5Test {
 
     private static Path outputDir;
-    private static Path fixtureDir;
     private Store store;
 
     @BeforeAll
@@ -39,7 +38,8 @@ public class Excel2CSVMapperPOI5Test {
                 .resolve(Excel2CSVMapperPOI5Test.class.getName());
         Files.createDirectories(outputDir);
         //
-        fixtureDir = projectDir.resolve("src/test/fixture");
+        Path fixturesDir = projectDir.resolve("src/test/fixtures");
+        Path fixtureDir = fixturesDir.resolve("mapper");
         FileUtils.copyDirectory(fixtureDir.toFile(), outputDir.toFile());
     }
 
