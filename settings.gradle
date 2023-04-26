@@ -17,7 +17,7 @@ dependencyResolutionManagement {
             library('junit-jupiter-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junit5')
             library('junit-jupiter-engine', 'org.junit.jupiter', 'junit-jupiter-engine').versionRef('junit5')
 
-            version('materialstore', '0.12.5')
+            version('materialstore', '0.16.0')
             library('materialstore', 'com.kazurayam', 'materialstore').versionRef('materialstore')
 
             version('pdf2dom', '2.0.1')

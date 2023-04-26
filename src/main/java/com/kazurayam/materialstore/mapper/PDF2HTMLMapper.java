@@ -1,11 +1,11 @@
 package com.kazurayam.materialstore.mapper;
 
-import com.kazurayam.materialstore.core.filesystem.FileType;
-import com.kazurayam.materialstore.core.filesystem.Material;
-import com.kazurayam.materialstore.core.filesystem.MaterialstoreException;
-import com.kazurayam.materialstore.core.filesystem.Store;
-import com.kazurayam.materialstore.core.map.Mapper;
-import com.kazurayam.materialstore.core.map.MappingListener;
+import com.kazurayam.materialstore.core.FileType;
+import com.kazurayam.materialstore.core.Material;
+import com.kazurayam.materialstore.core.MaterialstoreException;
+import com.kazurayam.materialstore.core.Store;
+import com.kazurayam.materialstore.map.Mapper;
+import com.kazurayam.materialstore.map.MappingListener;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.fit.pdfdom.PDFDomTree;
 

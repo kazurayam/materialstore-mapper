@@ -1,6 +1,5 @@
 package com.kazurayam.materialstore.mapper;
 
-import com.kazurayam.materialstore.core.map.Mapper;
 import com.rometools.rome.feed.synd.SyndFeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class RSSDemo2ExcelMapper extends RSS2ExcelMapper implements Mapper {
+public final class RSSDemo2ExcelMapper extends RSS2ExcelMapper {
 
     private static final Logger logger =
             LoggerFactory.getLogger(RSSDemo2ExcelMapper.class);
