@@ -1,14 +1,14 @@
 package com.kazurayam.materialstore.mapper;
 
-import com.kazurayam.materialstore.core.filesystem.FileType;
-import com.kazurayam.materialstore.core.filesystem.Material;
-import com.kazurayam.materialstore.core.filesystem.MaterialstoreException;
-import com.kazurayam.materialstore.core.filesystem.Metadata;
-import com.kazurayam.materialstore.core.filesystem.Store;
-import com.kazurayam.materialstore.core.filesystem.StoreImpl;
-import com.kazurayam.materialstore.core.map.MappedResultSerializer;
-import com.kazurayam.materialstore.core.map.Mapper;
-import com.kazurayam.materialstore.core.map.MappingListener;
+import com.kazurayam.materialstore.core.FileType;
+import com.kazurayam.materialstore.core.Material;
+import com.kazurayam.materialstore.core.MaterialstoreException;
+import com.kazurayam.materialstore.core.Metadata;
+import com.kazurayam.materialstore.core.Store;
+import com.kazurayam.materialstore.core.StoreImpl;
+import com.kazurayam.materialstore.map.MappedResultSerializer;
+import com.kazurayam.materialstore.map.Mapper;
+import com.kazurayam.materialstore.map.MappingListener;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
@@ -102,7 +102,7 @@ public abstract class RSS2ExcelMapper implements Mapper {
 
     private SyndFeed getFeed(Material material) throws MaterialstoreException {
         try {
-            URL feedSource = material.toURL(store.getRoot());
+            URL feedSource = material.toURL();
             SyndFeedInput input = new SyndFeedInput();
             SyndFeed feed = null;
             try {
